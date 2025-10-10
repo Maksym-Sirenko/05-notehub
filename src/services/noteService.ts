@@ -33,7 +33,7 @@ export const fetchNotes = async ({
   page = 1,
   perPage = 10,
 }: FetchNotesParams): Promise<FetchNotesResponse> => {
-  const params = { search, page, per_page: perPage };
+  const params = { search, page, perPage };
   const { data } = await NoteService.get<FetchNotesResponse>("", { params });
   return data;
 };
