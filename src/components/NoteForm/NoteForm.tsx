@@ -46,6 +46,7 @@ const NoteForm = ({ onClose, onSuccess }: NoteFormProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       onSuccess?.();
+      onClose();
     },
   });
 
