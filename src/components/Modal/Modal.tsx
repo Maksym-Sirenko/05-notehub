@@ -8,9 +8,9 @@ interface ModalProps {
 }
 
 const Modal = ({ onClose, children }: ModalProps) => {
-  // const handleDropClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  //     if (event.target === event.currentTarget) onClose();
-  //   };
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) onClose();
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,7 +29,7 @@ const Modal = ({ onClose, children }: ModalProps) => {
   return createPortal(
     <div
       className={css.backdrop}
-      onClick={onClose}
+      onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
     >
