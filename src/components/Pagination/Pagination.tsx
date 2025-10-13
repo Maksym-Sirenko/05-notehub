@@ -15,13 +15,13 @@ const Pagination = ({
   return (
     <ReactPaginate
       pageCount={totalPages}
-      pageRangeDisplayed={2}
+      pageRangeDisplayed={5}
       marginPagesDisplayed={1}
       onPageChange={(selectedItem) => setCurrentPage(selectedItem.selected + 1)}
       containerClassName={css.pagination}
       activeClassName={css.active}
-      previousLabel="Previous"
-      nextLabel="Next"
+      previousLabel="←"
+      nextLabel="→"
       forcePage={currentPage - 1}
     />
   );

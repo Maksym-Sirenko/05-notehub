@@ -6,3 +6,5 @@ export interface Note {
   updatedAt: string;
   tag: string;
 }
+
+export type NoteFormData = Pick<Note, "id" | "createdAt" | "updatedAt">;

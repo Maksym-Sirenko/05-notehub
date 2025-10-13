@@ -3,6 +3,8 @@ import type { Note } from "../types/note";
 
 const API_KEY = import.meta.env.VITE_NOTEHUB_TOKEN;
 
+const PER_PAGE = 12;
+
 const NoteService = axios.create({
   baseURL: "https://notehub-public.goit.study/api/notes",
   headers: {
@@ -11,13 +13,13 @@ const NoteService = axios.create({
   },
 });
 
-interface FetchNotesResponse {
-  results: Note[];
-  total_pages: number;
+export interface FetchNotesResponse {
+  notes: Note[];
+  totalPages: number;
 }
 
 interface FetchNotesParams {
-  search: string;
+  search?: string;
   page?: number;
   perPage?: number;
 }
@@ -31,7 +33,7 @@ interface CreateNoteParams {
 export const fetchNotes = async ({
   search = "",
   page = 1,
-  perPage = 10,
+  perPage = PER_PAGE,
 }: FetchNotesParams): Promise<FetchNotesResponse> => {
   const params = { search, page, perPage };
   const { data } = await NoteService.get<FetchNotesResponse>("", { params });
@@ -43,9 +45,7 @@ export const createNote = async (newNote: CreateNoteParams) => {
   return data;
 };
 
-export const deleteNote = async (noteId: string): Promise<Note> => {
+export const deleteNote = async (noteId: Note["id"]): Promise<Note> => {
   const { data } = await NoteService.delete<Note>(`/${noteId}`);
   return data;
 };
-
-// export const updateNote = async ()
