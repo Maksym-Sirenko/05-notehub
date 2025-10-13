@@ -7,37 +7,43 @@ import css from "./App.module.css";
 import SearchBox from "../SearchBox/SearchBox";
 import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
-// import Modal from "../Modal/Modal";
-// import Loading from "../Loading/Loading";
-// import Error from "../Error/Error";
+import Modal from "../Modal/Modal";
+import NoteForm from "../NoteForm/NoteForm";
+import Loading from "../Loading/Loading";
+import Error from "../Error/Error";
 
 const App = () => {
   const [inputValue, setInputValue] = useState("");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
-  // const handleSearch = useDebouncedCallback(setSearch, 600);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearch = useDebouncedCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      setSearch(event.target.value),
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPage(1);
+      setSearch(event.target.value);
+    },
     600
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const openModal = () => setIsModalOpen(true);
-  // const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => setIsModalOpen(false);
 
   const { data, isSuccess, isLoading, isError } = useQuery<FetchNotesResponse>({
     queryKey: ["notes", search, currentPage],
-    queryFn: () => fetchNotes({ search, page: currentPage, perPage: 12 }),
+    queryFn: () =>
+      fetchNotes({
+        search,
+        page: currentPage,
+        perPage: 12,
+      }),
     placeholderData: keepPreviousData,
   });
 
   if (isLoading) {
     return (
       <div>
-        {/* <Loading/> */}
-        Loading...
+        <Loading label="Loading notes…" />
       </div>
     );
   }
@@ -45,8 +51,7 @@ const App = () => {
   if (isError) {
     return (
       <div>
-        {/* <Error/> */}
-        Error occurred while fetching notes.
+        <Error message="Error occurred while fetching notes." />
       </div>
     );
   }
@@ -70,6 +75,7 @@ const App = () => {
                 totalPages={data.totalPages}
               />
             )}
+
             <button className={css.button} onClick={openModal}>
               Create note +
             </button>

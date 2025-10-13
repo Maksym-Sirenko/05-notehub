@@ -1,4 +1,4 @@
-import { Formik, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import type { FormikHelpers } from "formik";
 import type { NoteTag } from "../../types/note";
 import * as Yup from "yup";
@@ -8,10 +8,10 @@ import { createNote } from "../../services/noteService";
 import css from "./NoteForm.module.css";
 
 const TAGS = ["Todo", "Work", "Personal", "Meeting", "Shopping"] as const;
+
 interface NoteFormProps {
   onClose: () => void;
   onSuccess?: () => void;
-  // onCreate: (note: Note) => void;
 }
 
 interface NoteFormValues {
@@ -26,22 +26,22 @@ const initialValues: NoteFormValues = {
   tag: "Todo",
 };
 
-const validationSchema = Yup.object().shape({
+const validationSchema = Yup.object({
   title: Yup.string()
     .min(3, "Title too short")
-    .max(30, "Title is too long")
+    .max(50, "Title is too long")
     .required("Title is required"),
-
   content: Yup.string().max(500, "Content is too long"),
-
-  tag: Yup.string().oneOf(TAGS, "Invalid tag").required("Tag is required"),
+  tag: Yup.mixed<NoteTag>()
+    .oneOf(TAGS as readonly NoteTag[])
+    .required("Tag is required"),
 });
 
 const NoteForm = ({ onClose, onSuccess }: NoteFormProps) => {
   const queryClient = useQueryClient();
   const fieldId = useId();
 
-  const { mutate: createMutate } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
@@ -53,31 +53,29 @@ const NoteForm = ({ onClose, onSuccess }: NoteFormProps) => {
     values: NoteFormValues,
     actions: FormikHelpers<NoteFormValues>
   ) => {
-    await createMutate(values);
+    await mutateAsync(values);
     actions.resetForm();
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSubmit}
       validationSchema={validationSchema}
-      validateOnBlur
-      validateOnChange
+      onSubmit={handleSubmit}
+      validateOnMount
     >
-      {({ isSubmitting }) => (
-        <form className={css.form}>
+      {({ isValid, dirty }) => (
+        <Form className={css.form}>
           <div className={css.formGroup}>
             <label htmlFor={`${fieldId}-title`}>Title</label>
             <Field
-              id={`&{fieldId}-title`}
-              type="text"
+              id={`${fieldId}-title`}
               name="title"
+              type="text"
               className={css.input}
             />
             <ErrorMessage name="title" component="span" className={css.error} />
           </div>
-          <div className={css.formGroup}></div>
 
           <div className={css.formGroup}>
             <label htmlFor={`${fieldId}-content`}>Content</label>
@@ -103,11 +101,11 @@ const NoteForm = ({ onClose, onSuccess }: NoteFormProps) => {
               name="tag"
               className={css.select}
             >
-              <option value="Todo">Todo</option>
-              <option value="Work">Work</option>
-              <option value="Personal">Personal</option>
-              <option value="Meeting">Meeting</option>
-              <option value="Shopping">Shopping</option>
+              {TAGS.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
             </Field>
             <ErrorMessage name="tag" component="span" className={css.error} />
           </div>
@@ -123,12 +121,12 @@ const NoteForm = ({ onClose, onSuccess }: NoteFormProps) => {
             <button
               type="submit"
               className={css.submitButton}
-              disabled={isSubmitting}
+              disabled={isPending || !isValid || !dirty}
             >
-              {isSubmitting ? "Creating..." : "Create note"}
+              {isPending ? "Creating..." : "Create note"}
             </button>
           </div>
-        </form>
+        </Form>
       )}
     </Formik>
   );

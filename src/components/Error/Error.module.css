@@ -1,0 +1,42 @@
+.text {
+    color: #fff;
+    background: linear-gradient(135deg, #ff4d4f, #d9363e);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin: 20px auto;
+    max-width: 420px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+    animation: fadeIn 0.3s ease, pulse 1.2s ease-in-out infinite alternate;
+    transition: transform 0.2s ease;
+}
+
+.text:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 8px rgba(255, 77, 79, 0.3);
+    }
+
+    to {
+        box-shadow: 0 0 16px rgba(255, 77, 79, 0.5);
+    }
+}
