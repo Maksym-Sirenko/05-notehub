@@ -1,5 +1,6 @@
 import { Formik, Field, ErrorMessage } from "formik";
 import type { FormikHelpers } from "formik";
+import type { NoteTag } from "../../types/note";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useId } from "react";
@@ -7,9 +8,6 @@ import { createNote } from "../../services/noteService";
 import css from "./NoteForm.module.css";
 
 const TAGS = ["Todo", "Work", "Personal", "Meeting", "Shopping"] as const;
-
-type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
-
 interface NoteFormProps {
   onClose: () => void;
   onSuccess?: () => void;

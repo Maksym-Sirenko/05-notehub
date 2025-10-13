@@ -7,4 +7,5 @@ export interface Note {
   tag: string;
 }
 
-export type NoteFormData = Pick<Note, "id" | "createdAt" | "updatedAt">;
+// export type NoteFormData = Pick<Note, "id" | "createdAt" | "updatedAt">;
+export type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
